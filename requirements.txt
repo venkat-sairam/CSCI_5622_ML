@@ -3,4 +3,5 @@ flake8
 isort
 pip
 python-dotenv
+from_root
 -e .
