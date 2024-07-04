@@ -5,16 +5,26 @@ from src.utils import (
     os,
     sys,
     read_from_csv_file,
-
 )
 from src.entity.artifact_entity import DataIngestionArtifact
 from sklearn.model_selection import train_test_split
-from src.constants import PROCESSED_TEST_FILE_PATH, PROCESSED_TRAIN_FILE_PATH, RAW_TRAIN_DATA_PATH
+from src.constants import (
+    EXTERNAL_TRAIN_FILE_PATH,
+    RAW_DATA_DIR_PATH,
+    CURRENT_TIME_STAMP,
+    TEST_FILE_NAME,
+    TRAIN_FILE_NAME,
+)
+
 
 @dataclass
 class DataIngestionConfig(object):
-    train_data_path = PROCESSED_TRAIN_FILE_PATH
-    test_data_path = PROCESSED_TEST_FILE_PATH
+    train_data_path = os.path.join(
+        RAW_DATA_DIR_PATH,
+        CURRENT_TIME_STAMP,
+        TRAIN_FILE_NAME,
+    )
+    test_data_path = os.path.join(RAW_DATA_DIR_PATH, CURRENT_TIME_STAMP, TEST_FILE_NAME)
 
 
 class Data_Ingestion:
@@ -25,10 +35,13 @@ class Data_Ingestion:
     def _initiate_data_ingestion(self):
         logging.info("Initializing data ingestion process...")
         try:
-            df = read_from_csv_file(RAW_TRAIN_DATA_PATH)
+            df = read_from_csv_file(EXTERNAL_TRAIN_FILE_PATH)
 
             train_df, test_df = train_test_split(df, test_size=0.30)
             print(train_df.shape, test_df.shape)
+
+            os.makedirs(os.path.dirname(self.config_info.train_data_path), exist_ok=True)
+            os.makedirs(os.path.dirname(self.config_info.test_data_path), exist_ok=True)
 
             train_df.to_csv(self.config_info.train_data_path)
             test_df.to_csv(self.config_info.test_data_path)
