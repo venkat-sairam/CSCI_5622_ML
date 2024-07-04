@@ -16,7 +16,6 @@ from src.constants import (
     TRAIN_FILE_NAME,
 )
 
-
 @dataclass
 class DataIngestionConfig(object):
     train_data_path = os.path.join(
@@ -32,7 +31,7 @@ class Data_Ingestion:
     def __init__(self) -> None:
         self.config_info = DataIngestionConfig()
 
-    def _initiate_data_ingestion(self):
+    def _initiate_data_ingestion(self) -> DataIngestionArtifact:
         logging.info("Initializing data ingestion process...")
         try:
             df = read_from_csv_file(EXTERNAL_TRAIN_FILE_PATH)
@@ -52,5 +51,6 @@ class Data_Ingestion:
                 test_file_path=self.config_info.test_data_path,
             )
             print(f"Data ingestion artifact details: {data_ingestion_artifact_details}")
+            return data_ingestion_artifact_details
         except Exception as e:
             raise CustomException(e, sys)

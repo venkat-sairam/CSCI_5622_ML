@@ -2,10 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+artifacts/
 logs/
 data/processed/
 data/raw/
+data/external/
 # C extensions
 *.so
 
