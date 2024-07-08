@@ -36,10 +36,10 @@ class Data_Transformation:
         data_ingestion_artifact=DataIngestionArtifact,
     ):
         try:
-            logging.info("Initializing data ingestion module")
+            logging.info("Initializing data Transformation module")
             self.data_transform_config = data_transform_config
             self.data_ingestion_artifact = data_ingestion_artifact
-            logging.info("Data ingestion module completed successfully...")
+            logging.info("Initialized Data Transformation module successfully...")
         except Exception as e:
             raise CustomException(e, sys)
 
