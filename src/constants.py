@@ -49,3 +49,42 @@ PREPROCESSED_OBJECT_TRAIN_FILE_NAME = "preprocessed__model_object.pkl"
 PREPROCESSED_OBJECT_FILE_PATH = os.path.join(
     PREPROCESSED_OBJECT_DIR_PATH, PREPROCESSED_OBJECT_TRAIN_FILE_NAME
 )
+
+
+# Model Trainer Constants
+
+MODEL_TRAINER_DIR_NAME = "model_trainer"
+MODEL_TRAINER_TRAINED_MODEL_FILE_NAME = "trained_model.pkl"
+MODEL_TRAINER_DIR_PATH = os.path.join(ARTIFACTS_DIR_PATH, MODEL_TRAINER_DIR_NAME)
+MODEL_TRAINER_TRAINED_MODEL_FILE_PATH = os.path.join(
+    MODEL_TRAINER_DIR_PATH, MODEL_TRAINER_TRAINED_MODEL_FILE_NAME
+)
+
+DECISION_TREE_PARAMS = {
+    "criterion": ["gini", "entropy"],
+    "splitter": ["best", "random"],
+    "max_depth": [10, 20, 30, 50, 75],
+    "min_samples_split": [2, 5],
+    "min_samples_leaf": [
+        2,
+        4,
+    ],
+    "max_features": [
+        "sqrt",
+        "log2",
+    ],
+    "random_state": [42],
+}
+LOGISTIC_REGRESSION_PARAMS = {
+    "penalty": ["l1", "l2"],
+    "C": [
+        0.001,
+        0.01,
+        0.1,
+        1,
+        10,
+    ],
+    "solver": ["liblinear", "saga"],
+    "max_iter": [10000, 12000],
+    "random_state": [42],
+}
