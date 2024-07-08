@@ -12,3 +12,7 @@ DataTransformtionArtifact = namedtuple(
         "preprocessed_object_file_path",
     ],
 )
+
+ModelTrainerConfig = namedtuple(
+    "ModelTrainerConfig", ["is_model_trained", "trained_model_file_path", "model_metrics"]
+)
