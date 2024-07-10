@@ -13,6 +13,6 @@ DataTransformtionArtifact = namedtuple(
     ],
 )
 
-ModelTrainerConfig = namedtuple(
-    "ModelTrainerConfig", ["is_model_trained", "trained_model_file_path", "model_metrics"]
+ModelTrainerArtifact = namedtuple(
+    "ModelTrainerArtifact", ["is_model_trained", "trained_model_file_path", "model_metrics"]
 )
