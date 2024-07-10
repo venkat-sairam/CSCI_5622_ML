@@ -9,7 +9,7 @@ from src.constants import (
     ROOT_DIR,
 )
 from sklearn.metrics import balanced_accuracy_score
-from src.entity.artifact_entity import DataTransformtionArtifact
+from src.entity.artifact_entity import DataTransformtionArtifact, ModelTrainerArtifact
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
@@ -33,7 +33,7 @@ class ModelTrainer(object):
         except Exception as e:
             raise CustomException(e, sys)
 
-    def initiate_model_trainer(self):
+    def initiate_model_trainer(self) -> ModelTrainerArtifact:
         try:
             logging.info("Initializing model trainer module")
             transformed_train_file_path = (
@@ -73,29 +73,70 @@ class ModelTrainer(object):
             )
             logging.info(f"Metrics: { metrics_list}")
             logging.info("Model training completed successfully.")
+            best_model_list = [{"score": 0, "model_name": None}]
+
             for model in metrics_list:
 
-                trained_object = model["model_name"]["model_object"]
+                trained_object = model["model_details"]["model_object"]
+                trained_model_name = model["model_details"]["model_name"]
+
                 best_model = trained_object.best_estimator_
-                # Get feature importances
-                importances = best_model.feature_importances_
 
-                # Select the top 20% features
-                num_features = int(0.2 * len(importances))
-                top_features_indices = np.argsort(importances)[-num_features:]
+                x_train_selected = x_train
+                x_test_selected = x_test
 
-                # Subset the training and test sets with the selected features
-                x_train_selected = x_train[:, top_features_indices]
-                x_test_selected = x_test[:, top_features_indices]
+                if hasattr(best_model, "feature_importances_"):
+                    # Get feature importances
+                    importances = best_model.feature_importances_
+
+                    # Select the top 20% features
+                    num_features = int(0.2 * len(importances))
+                    top_features_indices = np.argsort(importances)[-num_features:]
+
+                    # Subset the training and test sets with the selected features
+                    x_train_selected = x_train[:, top_features_indices]
+                    x_test_selected = x_test[:, top_features_indices]
 
                 # Refit the model
                 best_model.fit(x_train_selected, y_train)
 
                 # Evaluate the refitted model on the test set
                 test_score = best_model.score(x_test_selected, y_test)
-                logging.info(f"Accuracy of the test set with top 20% features: {test_score}")
+                logging.info(f"Test score of {trained_model_name} = {test_score}")
 
-                save_object(file_path=MODEL_TRAINER_TRAINED_MODEL_FILE_PATH, object=trained_object)
-                # save_model(model["model"], self.model_trainer_config.trained_model_file_path)
+                # Update the best model, score if the current model's accuracy is higher
+                current_best_score = best_model_list[0].get("score")
+
+                if test_score > current_best_score:
+                    best_model_list[0]["score"] = test_score
+                    best_model_list[0]["model_name"] = trained_model_name
+                    best_model_list[0]["trained_model_object"] = best_model
+
+            best_model_name = best_model_list[0]["model_name"]
+            best_model_score = best_model_list[0]["score"]
+            best_model_objecct = best_model_list[0]["trained_model_object"]
+
+            logging.info(
+                f"Best Accuracy of  {best_model_name} with the test set is  ==> {best_model_score}"
+            )
+            logging.info(f"Best Model is: {best_model_objecct}")
+
+            save_object(
+                file_path=MODEL_TRAINER_TRAINED_MODEL_FILE_PATH,
+                object=best_model_list[0]["trained_model_object"],
+            )
+            logging.info(
+                f"Trained {best_model_list[0]['model_name']} model object saved at: {MODEL_TRAINER_TRAINED_MODEL_FILE_PATH}"
+            )
+
+            model_trainer_artifact_details = ModelTrainerArtifact(
+                is_model_trained=True,
+                trained_model_file_path=MODEL_TRAINER_TRAINED_MODEL_FILE_PATH,
+                model_metrics=best_model_list,
+            )
+            logging.info(f"Model trainer artifact details: {model_trainer_artifact_details}")
+            logging.info("Model trainer completed successfully.")
+            return model_trainer_artifact_details
         except Exception as e:
+            logging.error(e)
             raise CustomException(e, sys)
