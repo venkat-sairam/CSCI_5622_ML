@@ -68,7 +68,6 @@ def train_model(X_train, y_train, list_of_models_With_grid_params):
         classifier = list_of_models_With_grid_params[model_name]["model"]
         grid_parameters = list_of_models_With_grid_params[model_name]["grid_params"]
         logging.info(f"Training model: {model_name}")
-
         stratified_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
         logging.info(f"Applying Grid Search CV on: {model_name}")
         grid_search_clf = GridSearchCV(
@@ -83,12 +82,13 @@ def train_model(X_train, y_train, list_of_models_With_grid_params):
         grid_search_clf.fit(X_train, y_train)
         metrics_list.append(
             {
-                'model_name': {
+                "model_details": {
+                    'model_name': model_name,
                     "best_params": grid_search_clf.best_params_,
                     "best_balanced_accuracy": grid_search_clf.best_score_,
                     "model_object": grid_search_clf,
                 }
             }
         )
-   
+
     return metrics_list
