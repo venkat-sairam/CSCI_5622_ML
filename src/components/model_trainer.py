@@ -7,12 +7,13 @@ from src.constants import (
     DECISION_TREE_PARAMS,
     LOGISTIC_REGRESSION_PARAMS,
     ROOT_DIR,
+    RANDOM_FOREST_PARAMS,
 )
 from sklearn.metrics import balanced_accuracy_score
 from src.entity.artifact_entity import DataTransformtionArtifact, ModelTrainerArtifact
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
-
+from sklearn.ensemble import RandomForestClassifier
 
 @dataclass
 class ModelTrainerConfig(object):
@@ -64,6 +65,10 @@ class ModelTrainer(object):
                     "model": LogisticRegression(),
                     "grid_params": LOGISTIC_REGRESSION_PARAMS,
                 },
+                "Random Forest Classifier":{
+                    "model": RandomForestClassifier(),
+                    "grid_params": RANDOM_FOREST_PARAMS
+                }
             }
             logging.info("Training the models...")
             metrics_list = train_model(
@@ -73,7 +78,7 @@ class ModelTrainer(object):
             )
             logging.info(f"Metrics: { metrics_list}")
             logging.info("Model training completed successfully.")
-            best_model_list = [{"score": 0, "model_name": None}]
+            best_model_list = [{"score": 0, "model_name": None, "top_features_indices": None}]
 
             for model in metrics_list:
 
@@ -84,7 +89,7 @@ class ModelTrainer(object):
 
                 x_train_selected = x_train
                 x_test_selected = x_test
-
+                importances = None
                 if hasattr(best_model, "feature_importances_"):
                     # Get feature importances
                     importances = best_model.feature_importances_
@@ -111,6 +116,7 @@ class ModelTrainer(object):
                     best_model_list[0]["score"] = test_score
                     best_model_list[0]["model_name"] = trained_model_name
                     best_model_list[0]["trained_model_object"] = best_model
+                    best_model_list[0]["top_feature_indices"] = top_features_indices
 
             best_model_name = best_model_list[0]["model_name"]
             best_model_score = best_model_list[0]["score"]
