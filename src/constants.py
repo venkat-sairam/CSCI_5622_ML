@@ -88,3 +88,10 @@ LOGISTIC_REGRESSION_PARAMS = {
     "max_iter": [10000, 12000],
     "random_state": [42],
 }
+
+RANDOM_FOREST_PARAMS = {
+    "n_estimators": [ 150, 200, 300],  # Number of trees in the forest
+    "max_depth": [None, 10, 20, 30],  # Maximum depth of the trees
+    "min_samples_split": [2, 5, 10],  # Minimum samples required to split a node
+    "max_features": ["sqrt", "log2"],  # Number of features to consider at every split
+}
