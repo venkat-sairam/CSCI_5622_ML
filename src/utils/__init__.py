@@ -5,7 +5,7 @@ import os
 import numpy as np
 import sys
 from datetime import datetime
-from dill import dump
+from dill import dump, load
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 
 
@@ -37,7 +37,16 @@ def save_object(file_path: str, object: object):
     except Exception as e:
         raise CustomException(e, sys)
 
-
+def load_object(file_path: str):
+    try:
+        logging.info(f"loading object at: {file_path}")
+        with open(file_path, "rb") as file:
+            obj = load(file)
+        
+        logging.info("Successfully Loaded model object ......")
+        return obj
+    except Exception as e:
+        raise CustomException(e, sys)
 def save_numpy_array(file_path: str, array):
     try:
         logging.info(f"saving numpy array at: {file_path}")
