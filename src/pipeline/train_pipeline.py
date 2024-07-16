@@ -4,7 +4,7 @@ from src.components.model_trainer import ModelTrainer
 from src.logger import logging
 from src.exception import CustomException
 from src.entity.artifact_entity import DataIngestionArtifact, DataTransformtionArtifact
-
+from src.components.model_evaluator import ModelEvaluator
 
 def print_before_execution(func):
     def wrapper(*args, **kwargs):
@@ -37,4 +37,13 @@ class Pipeline:
     @print_before_execution
     def initiate_model_training(self):
         model_trainer = ModelTrainer(data_transformation_artifact=self.data_transformtion_artifact)
-        model_trainer.initiate_model_trainer()
+        self.model_trainer_artifact = model_trainer.initiate_model_trainer()
+
+    @print_before_execution
+    def initiate_model_evaluation(self):
+        model_evaluator = ModelEvaluator(
+            data_ingestion_artifact=self.data_ingestion_artifact,
+            model_trainer_artifact=self.model_trainer_artifact,
+            data_transformtion_artifact=self.data_transformtion_artifact,
+        )
+        model_evaluator.evaluate_model()
