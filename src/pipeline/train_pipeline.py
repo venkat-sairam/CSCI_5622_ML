@@ -46,4 +46,5 @@ class Pipeline:
             model_trainer_artifact=self.model_trainer_artifact,
             data_transformtion_artifact=self.data_transformtion_artifact,
         )
-        model_evaluator.evaluate_model()
+        # model_evaluator.evaluate_model(data=self.data_ingestion_artifact.test_file_path)
+        model_evaluator.evaluate_model(data=r"D:\CSCI_5622_ML\test_combined_participants_data.csv")
