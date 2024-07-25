@@ -62,7 +62,8 @@ class Data_Transformation:
             )
 
             smote = SMOTE(random_state=42)
-            pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("smote", smote)])
+            # pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("smote", smote)])
+            pipeline = Pipeline(steps=[("preprocessor", preprocessor)])
             return pipeline
         except Exception as e:
             raise CustomException(e, sys)
@@ -100,18 +101,25 @@ class Data_Transformation:
             preprocessed_object = self.get_preprocessed_model_object(X_train=train_input_features)
 
             logging.info("Applyng SMOTE on the training dataset...")
-            X_train_resampled, y_train_resampled = preprocessed_object["smote"].fit_resample(
-                preprocessed_object["preprocessor"].fit_transform(train_input_features),
-                train_target_feature,
-            )
+            X_train_resampled, y_train_resampled =preprocessed_object["preprocessor"].fit_transform(train_input_features),train_target_feature,
+            
+
+            #             X_train_resampled, y_train_resampled = preprocessed_object["smote"].fit_resample(
+            #     preprocessed_object["preprocessor"].fit_transform(train_input_features),
+            #     train_target_feature,
+            # )
             logging.info(
                 f"transformed size of the train dataset after applying SMOTE: {X_train_resampled.shape, y_train_resampled.shape}"
             )
             logging.info("Applyng SMOTE on the testing dataset")
-            X_test_resampled, y_test_resampled = preprocessed_object["smote"].fit_resample(
-                preprocessed_object["preprocessor"].transform(test_input_features),
-                test_target_feature,
-            )
+            X_test_resampled, y_test_resampled =preprocessed_object["preprocessor"].transform(test_input_features),test_target_feature
+            
+
+            #             X_test_resampled, y_test_resampled = preprocessed_object["smote"].fit_resample(
+            #     preprocessed_object["preprocessor"].transform(test_input_features),
+            #     test_target_feature,
+            # )
+
 
             logging.info(
                 f"transformed size of the test dataset after applying SMOTE: {X_test_resampled.shape, y_test_resampled.shape}"
