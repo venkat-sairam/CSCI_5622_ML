@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 from dill import dump, load
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
-
+from pandas import DataFrame
 
 def read_from_csv_file(file_path: str) -> pd.DataFrame:
     try:
