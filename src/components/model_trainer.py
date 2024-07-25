@@ -15,6 +15,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
+
 @dataclass
 class ModelTrainerConfig(object):
     trained_model_file_path = MODEL_TRAINER_TRAINED_MODEL_FILE_PATH
@@ -61,14 +62,14 @@ class ModelTrainer(object):
                     "model": DecisionTreeClassifier(),
                     "grid_params": DECISION_TREE_PARAMS,
                 },
-                "Logistic_Regression_Classifier": {
-                    "model": LogisticRegression(),
-                    "grid_params": LOGISTIC_REGRESSION_PARAMS,
-                },
-                "Random Forest Classifier":{
-                    "model": RandomForestClassifier(),
-                    "grid_params": RANDOM_FOREST_PARAMS
-                }
+                # "Logistic_Regression_Classifier": {
+                #     "model": LogisticRegression(),
+                #     "grid_params": LOGISTIC_REGRESSION_PARAMS,
+                # },
+                # "Random Forest Classifier":{
+                #     "model": RandomForestClassifier(),
+                #     "grid_params": RANDOM_FOREST_PARAMS
+                # }
             }
             logging.info("Training the models...")
             metrics_list = train_model(
@@ -89,18 +90,20 @@ class ModelTrainer(object):
 
                 x_train_selected = x_train
                 x_test_selected = x_test
+                top_features_indices=None
+
                 importances = None
-                if hasattr(best_model, "feature_importances_"):
-                    # Get feature importances
-                    importances = best_model.feature_importances_
+                # if hasattr(best_model, "feature_importances_"):
+                #     # Get feature importances
+                #     importances = best_model.feature_importances_
 
-                    # Select the top 20% features
-                    num_features = int(0.2 * len(importances))
-                    top_features_indices = np.argsort(importances)[-num_features:]
+                #     # Select the top 20% features
+                #     num_features = int(0.35 * len(importances))
+                #     top_features_indices = np.argsort(importances)[-num_features:]
 
-                    # Subset the training and test sets with the selected features
-                    x_train_selected = x_train[:, top_features_indices]
-                    x_test_selected = x_test[:, top_features_indices]
+                #     # Subset the training and test sets with the selected features
+                #     x_train_selected = x_train[:, top_features_indices]
+                #     x_test_selected = x_test[:, top_features_indices]
 
                 # Refit the model
                 best_model.fit(x_train_selected, y_train)
