@@ -49,7 +49,6 @@ class Data_Transformation:
     def get_preprocessed_model_object(self, X_train):
         try:
 
-            logging.info("Transforming the dataset using SMOTE")
             numerical_transformer = Pipeline(
                 steps=[
                     ("drop_duplicates", FunctionTransformer(self.handle_duplicates)),
